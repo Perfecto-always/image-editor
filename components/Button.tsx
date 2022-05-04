@@ -1,15 +1,14 @@
 import { HTMLProps } from "react";
 
 export interface ButtonProps extends HTMLProps<HTMLButtonElement> {
-  color?: string;
+  className?: string;
   label?: string;
   type?: "button" | "submit" | "reset";
 }
-function Button({ color, ...props }: ButtonProps) {
+function Button({ className, ...props }: ButtonProps) {
   return (
     <button
-      className={`flex w-full justify-between truncate rounded-md p-2 font-medium text-${color}-600 
-      hover:bg-${color}-100 `}
+      className={`flex w-full justify-between truncate rounded-md p-2 font-medium ${className}`}
       {...props}
     >
       {props.children}

@@ -80,7 +80,7 @@ export default function Edit() {
         <div className='relative col-span-2 h-full w-full border border-r-2'>
           <div className='flex h-full w-full flex-col items-center p-4'>
             <Button
-              color='green'
+              className='text-green-600 hover:bg-green-100'
               onClick={() => {
                 const input = document.getElementById(
                   "fileInput"
@@ -114,7 +114,7 @@ export default function Edit() {
               </Details>
             ))}
             <Button
-              color='red'
+              className='text-red-600 hover:bg-red-100'
               onClick={async () => {
                 const { imageProcessing } = await import(
                   "../functions/processing"
@@ -133,7 +133,7 @@ export default function Edit() {
               </svg>
             </Button>
             <Button
-              color='purple'
+              className='text-purple-600 hover:bg-purple-100'
               onClick={async () => {
                 const { imageProcessing } = await import(
                   "../functions/processing"
