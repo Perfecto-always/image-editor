@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Button from "../components/Button";
 import DetailButton from "../components/Details/DetailButton";
 import Details from "../components/Details/Details";

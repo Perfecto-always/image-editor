@@ -2,7 +2,7 @@ export class Image {
   private _canvas = document.getElementById("canvas") as HTMLCanvasElement;
   private _ctx = this._canvas.getContext("2d")!;
   private _imgData!: ImageData;
-  private _originalImageData!: ImageData;
+  private _originalImgData!: ImageData;
   public width!: number;
   public height!: number;
 
@@ -13,7 +13,7 @@ export class Image {
       this._canvas.width,
       this._canvas.height
     );
-    this._originalImageData = this._ctx.getImageData(
+    this._originalImgData = this._ctx.getImageData(
       0,
       0,
       this._canvas.width,
@@ -24,15 +24,15 @@ export class Image {
   public set newImgData(imgData: ImageData) {
     this.width = imgData.width;
     this.height = imgData.height;
-    this._originalImageData = imgData;
+    this._originalImgData = imgData;
   }
 
   desaturater(mode: "max" | "min") {
-    for (let i = 0; i < this._originalImageData.data.length; i += 4) {
-      const r = this._originalImageData.data[i];
-      const g = this._originalImageData.data[i + 1];
-      const b = this._originalImageData.data[i + 2];
-      const a = this._originalImageData.data[i + 3];
+    for (let i = 0; i < this._originalImgData.data.length; i += 4) {
+      const r = this._originalImgData.data[i];
+      const g = this._originalImgData.data[i + 1];
+      const b = this._originalImgData.data[i + 2];
+      const a = this._originalImgData.data[i + 3];
 
       const gray = mode === "max" ? Math.max(r, g, b) : Math.min(r, g, b);
 
@@ -46,7 +46,7 @@ export class Image {
   }
 
   restore() {
-    this._ctx.putImageData(this._originalImageData, 0, 0);
+    this._ctx.putImageData(this._originalImgData, 0, 0);
   }
 
   download() {
@@ -54,7 +54,12 @@ export class Image {
     const img = this._canvas.toDataURL("image/webp");
     anchor.setAttribute("download", "download.webp");
     anchor.setAttribute("href", img);
-    anchor.click();
+    const bool = window.confirm("Do you want to download image?");
+    if (bool) {
+      anchor.click();
+    } else {
+      return;
+    }
   }
 }
 
