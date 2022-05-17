@@ -1,33 +1,15 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Button from "../components/Button";
 import DetailButton from "../components/Details/DetailButton";
 import Details from "../components/Details/Details";
 import { useRouter } from "next/router";
 import Head from "next/head";
-
-const Processing = [
-  {
-    label: "Desaturate",
-    properties: [
-      {
-        name: "Min",
-        method: async () => {
-          const { imageProcessing } = await import("../functions/processing");
-          imageProcessing.desaturater("min");
-        },
-      },
-      {
-        name: "Max",
-        method: async () => {
-          const { imageProcessing } = await import("../functions/processing");
-          imageProcessing.desaturater("max");
-        },
-      },
-    ],
-  },
-];
+import { formats } from "../utils/fomats";
+import { Processing } from "../utils/processingTypes";
 
 export default function Edit() {
+  const [format, setFormat] = useState<typeof formats[number]>("png");
+
   const router = useRouter();
   useEffect(() => {
     const files = document.getElementById("fileInput") as HTMLInputElement;
@@ -79,8 +61,30 @@ export default function Edit() {
       <div className='grid min-h-screen w-full grid-cols-12 grid-rows-1 place-items-center'>
         <div className='relative col-span-2 h-full w-full border border-r-2'>
           <div className='flex h-full w-full flex-col items-center p-4'>
+            <span className='flex w-full justify-between p-2'>
+              Format
+              <select
+                className='rounded-md border-2 bg-gray-100 px-2 outline-none'
+                onChange={(e) => {
+                  // @ts-ignore
+                  const found = formats.includes(e.target.value);
+                  if (found) {
+                    // @ts-ignore
+                    setFormat(e.target.value);
+                  } else {
+                    setFormat("png");
+                  }
+                }}
+              >
+                {formats.map((format, index) => (
+                  <option value={format} key={index}>
+                    {format}
+                  </option>
+                ))}
+              </select>
+            </span>
             <Button
-              className='text-green-600 hover:bg-green-100'
+              color='green'
               onClick={() => {
                 const input = document.getElementById(
                   "fileInput"
@@ -104,9 +108,9 @@ export default function Edit() {
               <Details label={process.label} key={index}>
                 {process.properties.map((property, index) => (
                   <DetailButton
+                    label={property.name}
                     key={index}
                     onClick={property.method}
-                    label={property.name}
                   >
                     {property.name}
                   </DetailButton>
@@ -114,7 +118,64 @@ export default function Edit() {
               </Details>
             ))}
             <Button
-              className='text-red-600 hover:bg-red-100'
+              color='fuchsia'
+              onClick={async () => {
+                const { imageProcessing } = await import(
+                  "../functions/processing"
+                );
+                imageProcessing.saturate();
+              }}
+            >
+              Saturate
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                height='24'
+                width='24'
+                fill='currentColor'
+              >
+                <path d='M12 22Q9.925 22 8.1 21.212Q6.275 20.425 4.925 19.075Q3.575 17.725 2.788 15.9Q2 14.075 2 12Q2 9.925 2.788 8.1Q3.575 6.275 4.925 4.925Q6.275 3.575 8.1 2.787Q9.925 2 12 2Q14.075 2 15.9 2.787Q17.725 3.575 19.075 4.925Q20.425 6.275 21.212 8.1Q22 9.925 22 12Q22 14.075 21.212 15.9Q20.425 17.725 19.075 19.075Q17.725 20.425 15.9 21.212Q14.075 22 12 22ZM13 19.925Q15.975 19.55 17.988 17.312Q20 15.075 20 12Q20 8.925 17.988 6.687Q15.975 4.45 13 4.075Z' />
+              </svg>
+            </Button>
+            <Button
+              color='orange'
+              onClick={async () => {
+                const { imageProcessing } = await import(
+                  "../functions/processing"
+                );
+                imageProcessing.grain();
+              }}
+            >
+              Grain
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                height='24'
+                width='24'
+                fill='currentColor'
+              >
+                <path d='M10 16Q9.175 16 8.588 15.412Q8 14.825 8 14Q8 13.175 8.588 12.587Q9.175 12 10 12Q10.825 12 11.413 12.587Q12 13.175 12 14Q12 14.825 11.413 15.412Q10.825 16 10 16ZM6 12Q5.175 12 4.588 11.412Q4 10.825 4 10Q4 9.175 4.588 8.587Q5.175 8 6 8Q6.825 8 7.412 8.587Q8 9.175 8 10Q8 10.825 7.412 11.412Q6.825 12 6 12ZM6 20Q5.175 20 4.588 19.413Q4 18.825 4 18Q4 17.175 4.588 16.587Q5.175 16 6 16Q6.825 16 7.412 16.587Q8 17.175 8 18Q8 18.825 7.412 19.413Q6.825 20 6 20ZM18 8Q17.175 8 16.587 7.412Q16 6.825 16 6Q16 5.175 16.587 4.588Q17.175 4 18 4Q18.825 4 19.413 4.588Q20 5.175 20 6Q20 6.825 19.413 7.412Q18.825 8 18 8ZM14 20Q13.175 20 12.588 19.413Q12 18.825 12 18Q12 17.175 12.588 16.587Q13.175 16 14 16Q14.825 16 15.413 16.587Q16 17.175 16 18Q16 18.825 15.413 19.413Q14.825 20 14 20ZM18 16Q17.175 16 16.587 15.412Q16 14.825 16 14Q16 13.175 16.587 12.587Q17.175 12 18 12Q18.825 12 19.413 12.587Q20 13.175 20 14Q20 14.825 19.413 15.412Q18.825 16 18 16ZM14 12Q13.175 12 12.588 11.412Q12 10.825 12 10Q12 9.175 12.588 8.587Q13.175 8 14 8Q14.825 8 15.413 8.587Q16 9.175 16 10Q16 10.825 15.413 11.412Q14.825 12 14 12ZM10 8Q9.175 8 8.588 7.412Q8 6.825 8 6Q8 5.175 8.588 4.588Q9.175 4 10 4Q10.825 4 11.413 4.588Q12 5.175 12 6Q12 6.825 11.413 7.412Q10.825 8 10 8Z' />
+              </svg>
+            </Button>
+            <Button
+              color='sky'
+              onClick={async () => {
+                const { imageProcessing } = await import(
+                  "../functions/processing"
+                );
+                imageProcessing.invert();
+              }}
+            >
+              Invert
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                height='24'
+                width='24'
+                fill='currentColor'
+              >
+                <path d='M12 21Q8.675 21 6.338 18.688Q4 16.375 4 13.1Q4 11.45 4.625 10.05Q5.25 8.65 6.35 7.55L12 2L17.65 7.55Q18.75 8.65 19.375 10.05Q20 11.45 20 13.1Q20 16.375 17.663 18.688Q15.325 21 12 21ZM12 19V4.8L7.75 9Q6.875 9.825 6.438 10.862Q6 11.9 6 13.1Q6 15.525 7.75 17.262Q9.5 19 12 19Z' />
+              </svg>
+            </Button>
+            <Button
+              color='red'
               onClick={async () => {
                 const { imageProcessing } = await import(
                   "../functions/processing"
@@ -133,12 +194,12 @@ export default function Edit() {
               </svg>
             </Button>
             <Button
-              className='text-purple-600 hover:bg-purple-100'
+              color='purple'
               onClick={async () => {
                 const { imageProcessing } = await import(
                   "../functions/processing"
                 );
-                imageProcessing.download();
+                imageProcessing.download(format);
               }}
             >
               Download
