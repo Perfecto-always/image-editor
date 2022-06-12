@@ -48,12 +48,10 @@ export class Image {
       this._imgData.data[i + 2] = gray;
       this._imgData.data[i + 3] = a;
     }
-
-    this._ctx?.putImageData(this._imgData, 0, 0);
+    this.showImage();
   }
 
   invert() {
-    console.log(this._imgData.data);
     for (let i = 0; i < this._originalImgData.data.length; i += 4) {
       const r = this._imgData.data[i];
       const g = this._imgData.data[i + 1];
@@ -65,8 +63,7 @@ export class Image {
       this._imgData.data[i + 2] = 255 - b;
       this._imgData.data[i + 3] = a;
     }
-
-    this._ctx?.putImageData(this._imgData, 0, 0);
+    this.showImage();
   }
 
   saturate(value = 0.75) {
@@ -83,7 +80,7 @@ export class Image {
       this._imgData.data[i + 2] = -gray * 0.9 + b * (1 + value);
       this._imgData.data[i + 3] = a;
     }
-    this._ctx?.putImageData(this._imgData, 0, 0);
+    this.showImage();
   }
 
   grain(value = 50) {
@@ -98,12 +95,20 @@ export class Image {
       this._imgData.data[i + 2] = b - value * (1 - Math.random());
       this._imgData.data[i + 3] = a;
     }
+    this.showImage();
+  }
+
+  private showImage() {
     this._ctx?.putImageData(this._imgData, 0, 0);
+  }
+
+  private showOriginalImage() {
+    this._ctx.putImageData(this._originalImgData, 0, 0);
   }
 
   restore() {
     this._imgData.data.set(this._originalImgData.data);
-    this._ctx.putImageData(this._originalImgData, 0, 0);
+    this.showOriginalImage();
   }
 
   download(format: typeof formats[number]) {

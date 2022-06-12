@@ -15,6 +15,7 @@ const Color = {
   sky: "text-sky-600 hover:bg-sky-100",
   fuchsia: "text-fuchsia-600 hover:bg-fuchsia-100",
   orange: "text-orange-600 hover:bg-orange-100",
+  indigo: "text-indigo-600 hover:bg-indigo-100",
 };
 function Button({ color, ...props }: ButtonProps) {
   return (
